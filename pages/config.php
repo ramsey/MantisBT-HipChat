@@ -1,19 +1,22 @@
 <?php
 /**
- * Slack Integration
+ * HipChat Integration
+ * Copyright (C) 2014 Ben Ramsey (ben@benramsey.com)
+ *
+ * Original Source for Slack Integration
  * Copyright (C) 2014 Karim Ratib (karim.ratib@gmail.com)
  *
- * Slack Integration is free software; you can redistribute it and/or
+ * HipChat Integration is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License 2
  * as published by the Free Software Foundation.
  *
- * Slack Integration is distributed in the hope that it will be useful,
+ * HipChat Integration is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Slack Integration; if not, write to the Free Software
+ * along with HipChat Integration; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
  * or see http://www.gnu.org/licenses/.
  */
@@ -30,21 +33,12 @@ print_manage_menu( );
 <br />
 
 <form action="<?php echo plugin_page( 'config_edit' )?>" method="post">
-<?php echo form_security_field( 'plugin_Slack_config_edit' ) ?>
+<?php echo form_security_field( 'plugin_HipChat_config_edit' ) ?>
   <table align="center" class="width75" cellspacing="1">
 
     <tr>
       <td class="form-title" colspan="3">
         <?php echo plugin_lang_get( 'title' ) . ' : ' . plugin_lang_get( 'config' )?>
-      </td>
-    </tr>
-
-    <tr <?php echo helper_alternate_class( )?>>
-      <td class="category">
-        <?php echo plugin_lang_get( 'instance' )?>
-      </td>
-      <td  colspan="2">
-        <input type="text" name="instance" value="<?php echo plugin_config_get( 'instance' )?>" />
       </td>
     </tr>
 
@@ -68,34 +62,43 @@ print_manage_menu( );
 
     <tr <?php echo helper_alternate_class( )?>>
       <td class="category">
-        <?php echo plugin_lang_get( 'bot_icon' )?>
+        <?php echo plugin_lang_get( 'notify' )?>
       </td>
       <td  colspan="2">
-        <input type="text" name="bot_icon" value="<?php echo plugin_config_get( 'bot_icon' )?>" />
+        <input type="text" name="notify" value="<?php echo plugin_config_get( 'notify' )?>" />
       </td>
     </tr>
 
     <tr <?php echo helper_alternate_class( )?>>
       <td class="category">
-        <?php echo plugin_lang_get( 'default_channel' )?>
+        <?php echo plugin_lang_get( 'color' )?>
       </td>
       <td  colspan="2">
-        <input type="text" name="default_channel" value="<?php echo plugin_config_get( 'default_channel' )?>" />
+        <input type="text" name="color" value="<?php echo plugin_config_get( 'color' )?>" />
       </td>
     </tr>
 
     <tr <?php echo helper_alternate_class( )?>>
       <td class="category">
-        <?php echo plugin_lang_get( 'channels' )?>
+        <?php echo plugin_lang_get( 'default_room' )?>
+      </td>
+      <td  colspan="2">
+        <input type="text" name="default_room" value="<?php echo plugin_config_get( 'default_room' )?>" />
+      </td>
+    </tr>
+
+    <tr <?php echo helper_alternate_class( )?>>
+      <td class="category">
+        <?php echo plugin_lang_get( 'rooms' )?>
       </td>
       <td  colspan="2">
         <p>
-          Specifies the mapping between Mantis project names and Slack #channels.
+          Specifies the mapping between Mantis project names and HipChat rooms.
         </p>
         <p>
-          Option name is <strong>plugin_Slack_channels</strong> and is an array of 'Mantis project name' => 'Slack channel name'.
+          Option name is <strong>plugin_HipChat_rooms</strong> and is an array of 'Mantis project name' => 'HipChat room name'.
           Array options must be set using the <a href="adm_config_report.php">Configuration Report</a> screen.
-          The current value of this option is:<pre><?php var_export(plugin_config_get( 'channels' ))?></pre>
+          The current value of this option is:<pre><?php var_export(plugin_config_get( 'rooms' ))?></pre>
         </p>
       </td>
     </tr>
@@ -106,10 +109,10 @@ print_manage_menu( );
       </td>
       <td  colspan="2">
         <p>
-          Specifies the bug fields that should be attached to the Slack notifications.
+          Specifies the bug fields that should be attached to the HipChat notifications.
         </p>
         <p>
-          Option name is <strong>plugin_Slack_columns</strong> and is an array of bug column names. 
+          Option name is <strong>plugin_HipChat_columns</strong> and is an array of bug column names. 
           Array options must be set using the <a href="adm_config_report.php">Configuration Report</a> screen.
           <?php
             $t_columns = columns_get_all( $t_project_id );

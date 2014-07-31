@@ -1,14 +1,14 @@
-MantisBT-Slack
-==============
+MantisBT-HipChat
+================
 
-A [MantisBT](http://www.mantisbt.org/) plugin to send bug updates to [Slack](https://slack.com/) channels.
+A [MantisBT](http://www.mantisbt.org/) plugin to send bug updates to [HipChat](https://www.hipchat.com/) rooms.
 
+_Forked from the [MantisBT-Slack](https://github.com/mantisbt-plugins/Slack) plugin._
 
 # Setup
-* Extract this repo to your *Mantis folder/plugins/Slack*.
-* Setup a new Slack instance and note the subdomain used.
-* On the Slack side, add a new "Incoming Webhooks" integration and note the token that Slack generates for you.
-* On the MantisBT side, access the plugin's configuration page and fill in your Slack subdomain and the webhook token.
-* You can map your MantisBT projects to Slack channels by following the instructions on the plugin's configuration page. Make sure the *plugin_Slack_channels* configuration option is set to "All Users".
-* You can specify which bug fields appear in the Slack notifications. Edit the *plugin_Slack_columns* configuration option for this purpose.
+* Extract this repo to your *Mantis folder/plugins/HipChat*.
+* [Create an API token](https://www.hipchat.com/admin/api) for HipChat.
+* On the MantisBT side, access the plugin's configuration page and fill in your HipChat API token.
+* You can map your MantisBT projects to HipChat rooms by following the instructions on the plugin's configuration page.
+* You can specify which bug fields appear in the HipChat notifications. Edit the *plugin_HipChat_columns* configuration option for this purpose.
 

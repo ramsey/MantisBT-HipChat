@@ -1,24 +1,27 @@
 <?php
 /**
- * Slack Integration
+ * HipChat Integration
+ * Copyright (C) 2014 Ben Ramsey (ben@benramsey.com)
+ *
+ * Original Source for Slack Integration
  * Copyright (C) 2014 Karim Ratib (karim.ratib@gmail.com)
  *
- * Slack Integration is free software; you can redistribute it and/or
+ * HipChat Integration is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License 2
  * as published by the Free Software Foundation.
  *
- * Slack Integration is distributed in the hope that it will be useful,
+ * HipChat Integration is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Slack Integration; if not, write to the Free Software
+ * along with HipChat Integration; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
  * or see http://www.gnu.org/licenses/.
  */
 
-class SlackPlugin extends MantisPlugin {
+class HipChatPlugin extends MantisPlugin {
     function register() {
         $this->name = plugin_lang_get( 'title' );
         $this->description = plugin_lang_get( 'description' );
@@ -27,9 +30,9 @@ class SlackPlugin extends MantisPlugin {
         $this->requires = array(
             'MantisCore' => '>= 1.2.0',
         );
-        $this->author = 'Karim Ratib';
-        $this->contact = 'kratib@meedan.net';
-        $this->url = 'http://meedan.org';
+        $this->author = 'Ben Ramsey';
+        $this->contact = 'ben@benramsey.com';
+        $this->url = 'http://benramsey.com';
     }
 
     function install() {
@@ -46,12 +49,10 @@ class SlackPlugin extends MantisPlugin {
 
     function config() {
         return array(
-            'instance' => '',
             'token' => '',
-            'bot_name' => 'mantis',
-            'bot_icon' => '',
-            'channels' => array(),
-            'default_channel' => '#general',
+            'bot_name' => 'MantisBT',
+            'rooms' => array(),
+            'default_room' => '',
             'columns' => array(
                 'status',
                 'handler_id',
@@ -77,12 +78,12 @@ class SlackPlugin extends MantisPlugin {
     function bug_report_update($event, $bug, $bug_id) {
         $project = project_get_name($bug->project_id);
         $url = string_get_bug_view_url_with_fqdn($bug_id);
-        $summary = SlackPlugin::clean_summary(bug_format_summary($bug_id, SUMMARY_FIELD));
+        $summary = HipChatPlugin::clean_summary(bug_format_summary($bug_id, SUMMARY_FIELD));
         $reporter = '@' . user_get_name(auth_get_current_user_id());
         $msg = sprintf(plugin_lang_get($event === 'EVENT_REPORT_BUG' ? 'bug_created' : 'bug_updated'), 
             $project, $reporter, $url, $summary
         );
-        $this->notify($msg, $this->get_channel($project), $this->get_attachment($bug));
+        $this->notify($msg, $this->get_room($project));
     }
 
     function bug_action($event, $action, $bug_id) {
@@ -96,55 +97,36 @@ class SlackPlugin extends MantisPlugin {
         $bug = bug_get($bug_id);
         $project = project_get_name($bug->project_id);
         $reporter = '@' . user_get_name(auth_get_current_user_id());
-        $summary = SlackPlugin::clean_summary(bug_format_summary($bug_id, SUMMARY_FIELD));
+        $summary = HipChatPlugin::clean_summary(bug_format_summary($bug_id, SUMMARY_FIELD));
         $msg = sprintf(plugin_lang_get('bug_deleted'), $project, $reporter, $summary);
-        $this->notify($msg, $this->get_channel($project));
+        $this->notify($msg, $this->get_room($project));
     }
 
     function bugnote_add_edit($event, $bug_id, $bugnote_id) {
         $bug = bug_get($bug_id);
         $url = string_get_bugnote_view_url_with_fqdn($bug_id, $bugnote_id);
         $project = project_get_name($bug->project_id);
-        $summary = SlackPlugin::clean_summary(bug_format_summary($bug_id, SUMMARY_FIELD));
+        $summary = HipChatPlugin::clean_summary(bug_format_summary($bug_id, SUMMARY_FIELD));
         $reporter = '@' . user_get_name(auth_get_current_user_id());
         $note = bugnote_get_text($bugnote_id);
         $msg = sprintf(plugin_lang_get($event === 'EVENT_BUGNOTE_ADD' ? 'bugnote_created' : 'bugnote_updated'), 
             $project, $reporter, $url, $summary, $note
         );
-        $this->notify($msg, $this->get_channel($project));
+        $this->notify($msg, $this->get_room($project));
     }
 
     function bugnote_deleted($event, $bug_id, $bugnote_id) {
         $bug = bug_get($bug_id);
         $project = project_get_name($bug->project_id);
         $url = string_get_bug_view_url_with_fqdn($bug_id);
-        $summary = SlackPlugin::clean_summary(bug_format_summary($bug_id, SUMMARY_FIELD));
+        $summary = HipChatPlugin::clean_summary(bug_format_summary($bug_id, SUMMARY_FIELD));
         $reporter = '@' . user_get_name(auth_get_current_user_id());
         $msg = sprintf(plugin_lang_get('bugnote_deleted'), $project, $reporter, $url, $summary);
-        $this->notify($msg, $this->get_channel($project));
+        $this->notify($msg, $this->get_room($project));
     }
 
     static function clean_summary($summary) {
         return strip_tags(html_entity_decode($summary));
-    }
-
-    function get_attachment($bug) {
-        $attachment = array('fallback' => '');
-        $t_columns = (array)plugin_config_get('columns');
-        foreach ($t_columns as $t_column) {
-            $title = column_get_title( $t_column );
-            $value = $this->format_value($bug, $t_column);
-            
-            if ($title && $value) {
-                $attachment['fallback'] .= $title . ': ' . $value . "\n";
-                $attachment['fields'][] = array(
-                    'title' => $title,
-                    'value' => $value,
-                    'short' => !column_is_extended( $t_column ),
-                );
-            }
-        }
-        return $attachment;
     }
 
     function format_value($bug, $field_name) {
@@ -171,7 +153,7 @@ class SlackPlugin extends MantisPlugin {
             'fixed_in_version' => function($bug) { return $bug->fixed_in_version; },
             'target_version' => function($bug) { return $bug->target_version; },
             'build' => function($bug) { return $bug->build; },
-            'summary' => function($bug) { return SlackPlugin::clean_summary(bug_format_summary($bug->id, SUMMARY_FIELD)); },
+            'summary' => function($bug) { return HipChatPlugin::clean_summary(bug_format_summary($bug->id, SUMMARY_FIELD)); },
             'last_updated' => function($bug) { return date( config_get( 'short_date_format' ), $bug->last_updated ); },
             'date_submitted' => function($bug) { return date( config_get( 'short_date_format' ), $bug->date_submitted ); },
             'due_date' => function($bug) { return date( config_get( 'short_date_format' ), $bug->due_date ); },
@@ -196,36 +178,28 @@ class SlackPlugin extends MantisPlugin {
         }
     }
 
-    function get_channel($project) {
-        $channels = plugin_config_get('channels');
-        return isset($channels[$project]) ? $channels[$project] : plugin_config_get('default_channel');
+    function get_room($project) {
+        $rooms = plugin_config_get('rooms');
+        return isset($rooms[$project]) ? $rooms[$project] : plugin_config_get('default_room');
     }
 
-    function notify($msg, $channel, $attachment = FALSE) {
+    function notify($msg, $room) {
         $ch = curl_init();
-        // @see https://my.slack.com/services/new/incoming-webhook
-        $url = sprintf('https://%s.slack.com/services/hooks/incoming-webhook?token=%s', 
-            plugin_config_get('instance'), plugin_config_get('token')
-        );
+        // @see https://www.hipchat.com/docs/api/method/rooms/message
+        $url = sprintf('https://api.hipchat.com/v1/rooms/message?auth_token=%s', plugin_config_get('token'));
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $payload = array(
-            'channel' => $channel,
-            'username' => plugin_config_get('bot_name'),
-            'text' => $msg,
+            'room_id' => $room,
+            'from' => plugin_config_get('bot_name'),
+            'message' => $msg,
+            'message_format' => 'text',
+            'notify' => plugin_config_get('notify'),
+            'color' => plugin_config_get('color'),
+            'format' => 'json',
         );
-        $bot_icon = plugin_config_get('bot_icon');
-        if (preg_match('/^:[a-z0-9_\-]+:$/i', $bot_icon)) {
-            $payload['icon_emoji'] = $bot_icon;
-        } elseif ($bot_icon) {
-            $payload['icon_url'] = $bot_icon;
-        }
-        if ($attachment) {
-            $payload['attachments'] = array($attachment);
-        }
-        $data = array('payload' => json_encode($payload));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         $result = curl_exec($ch);
         curl_close($ch);
     }
