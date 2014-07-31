@@ -51,6 +51,8 @@ class HipChatPlugin extends MantisPlugin {
         return array(
             'token' => '',
             'bot_name' => 'MantisBT',
+            'notify' => '0',
+            'color' => 'purple',
             'rooms' => array(),
             'default_room' => '',
             'columns' => array(
