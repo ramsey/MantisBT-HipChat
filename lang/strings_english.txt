@@ -33,12 +33,12 @@ $s_plugin_HipChat_color = 'HipChat Color (yellow, red, green, purple, gray, or r
 $s_plugin_HipChat_default_room = 'Default HipChat Room';
 $s_plugin_HipChat_rooms = 'HipChat Rooms';
 $s_plugin_HipChat_columns = 'HipChat Columns';
-$s_plugin_HipChat_bug_created = '[%s] %s created <%s|%s>.';
-$s_plugin_HipChat_bug_updated = '[%s] %s updated <%s|%s>.';
+$s_plugin_HipChat_bug_created = '[%s] %s created %s <%s>.';
+$s_plugin_HipChat_bug_updated = '[%s] %s updated %s <%s>.';
 $s_plugin_HipChat_bug_deleted = '[%s] %s deleted %s.';
-$s_plugin_HipChat_bugnote_created = "[%s] %s commented on <%s|%s> saying:\n%s";
-$s_plugin_HipChat_bugnote_updated = "[%s] %s edited a comment on <%s|%s> saying:\n%s";
-$s_plugin_HipChat_bugnote_deleted = "[%s] %s deleted a comment on <%s|%s>.";
+$s_plugin_HipChat_bugnote_created = "[%s] %s commented on %s <%s> saying:\n%s";
+$s_plugin_HipChat_bugnote_updated = "[%s] %s edited a comment on %s <%s> saying:\n%s";
+$s_plugin_HipChat_bugnote_deleted = "[%s] %s deleted a comment on %s <%s>.";
 $s_plugin_HipChat_no_user = '(no one)';
 $s_plugin_HipChat_unknown_field = '(don\'t know how to render field "%s")';
 

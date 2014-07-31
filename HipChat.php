@@ -83,7 +83,7 @@ class HipChatPlugin extends MantisPlugin {
         $summary = HipChatPlugin::clean_summary(bug_format_summary($bug_id, SUMMARY_FIELD));
         $reporter = '@' . user_get_name(auth_get_current_user_id());
         $msg = sprintf(plugin_lang_get($event === 'EVENT_REPORT_BUG' ? 'bug_created' : 'bug_updated'), 
-            $project, $reporter, $url, $summary
+            $project, $reporter, $summary, $url
         );
         $this->notify($msg, $this->get_room($project));
     }
@@ -112,7 +112,7 @@ class HipChatPlugin extends MantisPlugin {
         $reporter = '@' . user_get_name(auth_get_current_user_id());
         $note = bugnote_get_text($bugnote_id);
         $msg = sprintf(plugin_lang_get($event === 'EVENT_BUGNOTE_ADD' ? 'bugnote_created' : 'bugnote_updated'), 
-            $project, $reporter, $url, $summary, $note
+            $project, $reporter, $summary, $url, $note
         );
         $this->notify($msg, $this->get_room($project));
     }
@@ -123,7 +123,7 @@ class HipChatPlugin extends MantisPlugin {
         $url = string_get_bug_view_url_with_fqdn($bug_id);
         $summary = HipChatPlugin::clean_summary(bug_format_summary($bug_id, SUMMARY_FIELD));
         $reporter = '@' . user_get_name(auth_get_current_user_id());
-        $msg = sprintf(plugin_lang_get('bugnote_deleted'), $project, $reporter, $url, $summary);
+        $msg = sprintf(plugin_lang_get('bugnote_deleted'), $project, $reporter, $summary, $url);
         $this->notify($msg, $this->get_room($project));
     }
 
