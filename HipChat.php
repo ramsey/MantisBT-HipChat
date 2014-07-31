@@ -133,11 +133,11 @@ class HipChatPlugin extends MantisPlugin {
 
     function format_value($bug, $field_name) {
         $values = array(
-            'id' => function($bug) { return sprintf('<%s|%s>', string_get_bug_view_url_with_fqdn($bug->id), $bug->id); },
+            'id' => function($bug) { return sprintf('%s <%s>', $bug->id, string_get_bug_view_url_with_fqdn($bug->id)); },
             'project_id' => function($bug) { return project_get_name($bug->project_id); },
             'reporter_id' => function($bug) { return '@' . user_get_name($bug->reporter_id); },
             'handler_id' => function($bug) { return empty($bug->handler_id) ? plugin_lang_get('no_user') : ('@' . user_get_name($bug->handler_id)); },
-            'duplicate_id' => function($bug) { return sprintf('<%s|%s>', string_get_bug_view_url_with_fqdn($bug->duplicate_id), $bug->duplicate_id); },
+            'duplicate_id' => function($bug) { return sprintf('%s <%s>', $bug->duplicate_id, string_get_bug_view_url_with_fqdn($bug->duplicate_id)); },
             'priority' => function($bug) { return get_enum_element( 'priority', $bug->priority ); },
             'severity' => function($bug) { return get_enum_element( 'severity', $bug->severity ); },
             'reproducibility' => function($bug) { return get_enum_element( 'reproducibility', $bug->reproducibility ); },
