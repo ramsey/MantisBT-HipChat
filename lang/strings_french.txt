@@ -42,5 +42,5 @@ $s_plugin_HipChat_bugnote_deleted = "[%s] %s a supprimé un commentaire du ticke
 $s_plugin_HipChat_no_user = '(aucun)';
 $s_plugin_HipChat_unknown_field = '(impossible d\'afficher le champ "%s")';
 
-$MANTIS_ERROR['plugin_HipChat_ERROR_NO_CURL'] = 'Le plugin HipChat a besoin de l'extension PHP cURL (http://php.net/curl)';
+$MANTIS_ERROR['plugin_HipChat_ERROR_NO_CURL'] = 'Le plugin HipChat a besoin de l\'extension PHP cURL (http://php.net/curl)';
 $MANTIS_ERROR['plugin_HipChat_ERROR_PHP_VERSION'] = 'Le plugin HipChat a besoin de PHP 5.3.0 ou supérieur pour fonctionner';
