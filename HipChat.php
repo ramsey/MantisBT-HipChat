@@ -28,7 +28,7 @@ class HipChatPlugin extends MantisPlugin {
         $this->page = 'config';
         $this->version = '0.2';
         $this->requires = array(
-            'MantisCore' => '1.3.0',
+            'MantisCore' => '>= 1.3.0',
         );
         $this->author = 'Ben Ramsey';
         $this->contact = 'ben@benramsey.com';
